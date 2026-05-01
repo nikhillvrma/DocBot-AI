@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+
+{% block title %}Alternative Medicine - DocBotAI{% endblock %}
+
+{% block content %}
+<section class="alternative-section">
+    <div class="alternative-container">
+        <div class="page-header">
+            <h1><i class="fas fa-leaf"></i> Alternative & Complementary Medicine</h1>
+            <p>Explore natural remedies and holistic treatment approaches</p>
+        </div>
+
+        <div class="content-layout">
+            <div class="input-section">
+                <div class="tab-selector">
+                    <button class="tab-btn active" onclick="switchTab('condition')">
+                        <i class="fas fa-heartbeat"></i> Find by Condition
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('medicine')">
+                        <i class="fas fa-pills"></i> Alternative to Medicine
+                    </button>
+                </div>
+
+                <form id="alternativeForm">
+                    <!-- Condition Tab -->
+                    <div id="conditionTab" class="tab-content active">
+                        <div class="form-group">
+                            <label for="condition">Condition / Health Concern *</label>
+                            <input 
+                                type="text" 
+                                id="condition" 
+                                name="condition" 
+                                placeholder="e.g., Anxiety, Insomnia, Joint Pain, Migraine"
+                            >
+                            <small>Enter the condition you want alternative treatments for</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="preferences">Treatment Preferences (Optional)</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="herbal" value="herbal">
+                                    <span>Herbal Medicine</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="ayurveda" value="ayurveda">
+                                    <span>Ayurveda</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="homeopathy" value="homeopathy">
+                                    <span>Homeopathy</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="acupuncture" value="acupuncture">
+                                    <span>Acupuncture</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="yoga" value="yoga">
+                                    <span>Yoga & Meditation</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="dietary" value="dietary">
+                                    <span>Dietary Changes</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Medicine Tab -->
+                    <div id="medicineTab" class="tab-content">
+                        <div class="form-group">
+                            <label for="medicine">Medicine Name *</label>
+                            <input 
+                                type="text" 
+                                id="medicine" 
+                                name="medicine" 
+                                placeholder="e.g., Aspirin, Metformin, Paracetamol"
+                            >
+                            <small>Enter the medicine you want natural alternatives for</small>
+                        </div>
+
+                        <div class="info-box" style="margin-top: 1rem;">
+                            <i class="fas fa-lightbulb"></i>
+                            <div>
+                                <strong>Tip:</strong> We'll suggest natural alternatives that work similarly to your medicine. Always consult your doctor before replacing prescribed medications.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="additionalInfo">Additional Notes (Optional)</label>
+                        <textarea 
+                            id="additionalInfo" 
+                            rows="4"
+                            placeholder="Any specific concerns, preferences, or restrictions..."
+                        ></textarea>
+                    </div>
+
+                    <div class="profile-summary">
+                        <h4><i class="fas fa-user-circle"></i> Your Medical Profile</h4>
+                        <div class="profile-info">
+                            <p><strong>Age:</strong> {{ user.age }} years</p>
+                            <p><strong>Medical History:</strong> {{ user.medical_history or 'None reported' }}</p>
+                            <p><strong>Allergies:</strong> {{ user.allergies or 'None reported' }}</p>
+                            <p><strong>Current Medications:</strong> {{ user.current_medications or 'None' }}</p>
+                        </div>
+                        <small>Alternative treatments will be suggested considering your profile</small>
+                    </div>
+
+                    <button type="submit" class="generate-btn" id="generateBtn">
+                        <span>Find Alternative Treatments</span>
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+
+                <div class="info-box" style="margin-top: 2rem;">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>About Alternative Medicine:</strong> These recommendations are complementary approaches that may work alongside conventional treatments. Always consult with qualified healthcare providers before starting any new treatment.
+                    </div>
+                </div>
+            </div>
+
+            <div class="output-section" id="outputSection">
+                <div class="empty-state">
+                    <i class="fas fa-spa"></i>
+                    <h3>No Recommendations Yet</h3>
+                    <p>Enter a condition and click "Find Alternative Treatments" to explore natural and holistic options</p>
+                    
+                    <div class="popular-alternatives">
+                        <h4>Popular Searches:</h4>
+                        <div class="alt-tags">
+                            <span class="alt-tag" onclick="quickSearch('Anxiety')">Anxiety Relief</span>
+                            <span class="alt-tag" onclick="quickSearch('Insomnia')">Better Sleep</span>
+                            <span class="alt-tag" onclick="quickSearch('Joint Pain')">Joint Pain</span>
+                            <span class="alt-tag" onclick="quickSearch('Digestive Issues')">Digestion</span>
+                            <span class="alt-tag" onclick="quickSearch('Stress')">Stress Management</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-cards">
+            <div class="info-card">
+                <i class="fas fa-seedling"></i>
+                <h4>Natural Remedies</h4>
+                <p>Explore herbs, supplements, and natural treatments backed by research</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-balance-scale"></i>
+                <h4>Holistic Approach</h4>
+                <p>Consider mind, body, and spirit in your healing journey</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-heart"></i>
+                <h4>Safe & Gentle</h4>
+                <p>Complementary treatments with minimal side effects when used properly</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentTab = 'condition';
+
+function switchTab(tab) {
+    currentTab = tab;
+    
+    // Update buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.closest('.tab-btn').classList.add('active');
+    
+    // Update content
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    document.getElementById(tab + 'Tab').classList.add('active');
+    
+    // Clear inputs
+    document.getElementById('condition').value = '';
+    document.getElementById('medicine').value = '';
+}
+
+function quickSearch(condition) {
+    currentTab = 'condition';
+    switchTab('condition');
+    document.getElementById('condition').value = condition;
+    document.getElementById('alternativeForm').dispatchEvent(new Event('submit'));
+}
+
+document.getElementById('alternativeForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const condition = document.getElementById('condition').value;
+    const medicine = document.getElementById('medicine').value;
+    const additionalInfo = document.getElementById('additionalInfo').value;
+    
+    // Validation
+    if (currentTab === 'condition' && !condition) {
+        alert('Please enter a condition');
+        return;
+    }
+    if (currentTab === 'medicine' && !medicine) {
+        alert('Please enter a medicine name');
+        return;
+    }
+    
+    // Get selected preferences
+    const preferences = [];
+    document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+        preferences.push(cb.nextElementSibling.textContent);
+    });
+    
+    const generateBtn = document.getElementById('generateBtn');
+    const outputSection = document.getElementById('outputSection');
+    
+    generateBtn.disabled = true;
+    generateBtn.innerHTML = '<span>Finding Alternatives...</span><i class="fas fa-spinner fa-spin"></i>';
+    
+    outputSection.innerHTML = `
+        <div class="loading-state">
+            <div class="loader"></div>
+            <p>Searching for alternative treatments...</p>
+            <small>This may take 10-20 seconds for the first request</small>
+        </div>
+    `;
+
+    try {
+        const response = await fetch('/suggest-alternative', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                condition: condition,
+                medicine: medicine,
+                preferences: preferences.join(', '),
+                additionalInfo: additionalInfo 
+            })
+        });
+
+        const data = await response.json();
+        
+        const title = currentTab === 'medicine' 
+            ? `Natural Alternatives to: ${medicine}`
+            : `Alternative Treatments for: ${condition}`;
+        
+        outputSection.innerHTML = `
+            <div class="alternative-results">
+                <div class="results-header">
+                    <i class="fas fa-leaf"></i>
+                    <div>
+                        <h3>${title}</h3>
+                        <p class="timestamp">Generated on ${new Date().toLocaleDateString()}</p>
+                    </div>
+                </div>
+                <div class="results-content">
+                    ${formatAlternativeResults(data.recommendations)}
+                </div>
+                <div class="results-footer">
+                    <div class="warning-box">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Important:</strong> These are complementary approaches. ${currentTab === 'medicine' ? 'Never stop prescribed medications without consulting your doctor.' : 'Always discuss with your healthcare provider before starting any alternative treatment.'} Consider drug interactions and allergies.
+                    </div>
+                    <div class="action-buttons">
+                        <button onclick="window.print()" class="action-btn">
+                            <i class="fas fa-print"></i> Print Recommendations
+                        </button>
+                        <button onclick="window.location.href='/chatbot'" class="action-btn secondary">
+                            <i class="fas fa-comments"></i> Ask Questions
+                        </button>
+                        <button onclick="window.location.href='/treatment-plan'" class="action-btn secondary">
+                            <i class="fas fa-notes-medical"></i> Conventional Treatment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        outputSection.innerHTML = `
+            <div class="error-state">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>Search Error</h3>
+                <p>Sorry, we couldn't find alternative treatments. Please ensure Ollama is running and try again.</p>
+                <small>Error: ${error.message}</small>
+            </div>
+        `;
+    } finally {
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = '<span>Find Alternative Treatments</span><i class="fas fa-search"></i>';
+    }
+});
+
+function formatAlternativeResults(text) {
+    if (!text || text.length < 10) {
+        return '<p>Unable to generate recommendations. Please try again with a different query.</p>';
+    }
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/\n\n/g, '</p><p>');
+    text = text.replace(/\n/g, '<br>');
+    text = text.replace(/- (.*?)(<br>|$)/g, '<li>$1</li>');
+    text = text.replace(/(<li>.*?<\/li>)/gs, '<ul>$1</ul>');
+    
+    // Add some basic structure if missing
+    if (!text.includes('<strong>')) {
+        text = text.replace(/(\d+\.|[A-Z][A-Z\s]+:)/g, '<strong>$1</strong>');
+    }
+    
+    return '<p>' + text + '</p>';
+}
+</script>
+{% endblock %}

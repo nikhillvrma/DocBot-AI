@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-text">
+            <h1>Welcome to <span class="gradient-text">DocBot<span class="ai-accent">AI</span></span></h1>
+            <p class="hero-subtitle">Your Intelligent Healthcare Companion</p>
+            <p class="hero-description">
+                Experience the future of healthcare with AI-powered medical insights, 
+                personalized treatment plans, and 24/7 health assistance at your fingertips.
+            </p>
+            <div class="hero-features">
+                <div class="feature-tag"><i class="fas fa-check-circle"></i> AI-Powered Diagnosis</div>
+                <div class="feature-tag"><i class="fas fa-check-circle"></i> Personalized Care</div>
+                <div class="feature-tag"><i class="fas fa-check-circle"></i> 24/7 Available</div>
+            </div>
+            <a href="/register" class="cta-button">
+                <span>Get Started</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="hero-image">
+            <img src="https://cdnjs.cloudflare.com/ajax/libs/undraw/1.0.0/illustrations/undraw_doctors_hwty.svg" alt="Healthcare Professional" onerror="this.src='https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&h=600&fit=crop'">
+        </div>
+    </div>
+</section>
+
+<section class="features">
+    <div class="container">
+        <h2 class="section-title">Our <span class="gradient-text">Features</span></h2>
+        <p class="section-subtitle">Comprehensive healthcare solutions powered by advanced AI technology</p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>AI Chatbot</h3>
+                <p>Get instant answers to your health questions from our intelligent chatbot trained on medical knowledge.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-diagnoses"></i>
+                </div>
+                <h3>Disease Prediction</h3>
+                <p>Analyze your symptoms and receive potential diagnoses with evidence-based recommendations.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-prescription"></i>
+                </div>
+                <h3>Treatment Plans</h3>
+                <p>Receive personalized treatment plans tailored to your medical history and current conditions.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-file-medical-alt"></i>
+                </div>
+                <h3>Report Analysis</h3>
+                <p>Upload your medical reports and get detailed, easy-to-understand explanations of your results.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Secure & Private</h3>
+                <p>Your health data is encrypted and securely stored with industry-standard protection.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="how-it-works">
+    <div class="container">
+        <h2 class="section-title">How It <span class="gradient-text">Works</span></h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Register</h3>
+                    <p>Create your account and provide your medical history for personalized care</p>
+                </div>
+            </div>
+            <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Consult</h3>
+                    <p>Chat with AI, describe symptoms, or upload medical reports</p>
+                </div>
+            </div>
+            <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Get Insights</h3>
+                    <p>Receive AI-powered analysis and personalized recommendations</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="container">
+        <h2>Ready to Transform Your Healthcare Experience?</h2>
+        <p>Join thousands of users who trust DocBotAI for their healthcare needs</p>
+        <a href="/register" class="cta-button secondary">Get Started Now</a>
+    </div>
+</section>
+{% endblock %}

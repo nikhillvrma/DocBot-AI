@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DocBotAI - Intelligent Healthcare Assistant{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-overlay" id="loadingScreen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading DocBotAI...</div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="{% if session.get('user_data') %}/dashboard{% else %}/{% endif %}"
+                    style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: white;">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>DocBot<span class="ai-text">AI</span></span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                {% if session.get('user_data') %}
+                <li><a href="/chatbot"><i class="fas fa-comments"></i> Chatbot</a></li>
+                <li><a href="/disease-prediction"><i class="fas fa-stethoscope"></i> Diagnosis</a></li>
+                <li><a href="/treatment-plan"><i class="fas fa-notes-medical"></i> Treatment</a></li>
+                <li><a href="/alternative-medicine"><i class="fas fa-leaf"></i> Alternative</a></li>
+                <li><a href="/hospital-recommendation"><i class="fas fa-hospital"></i> Hospitals</a></li>
+                <li><a href="/report-analysis"><i class="fas fa-file-medical"></i> Reports</a></li>
+                <li><a href="/profile"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="/logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                {% else %}
+                <li><a href="/">Home</a></li>
+                <li><a href="/register">Get Started</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-heartbeat"></i> DocBot<span class="ai-text">AI</span></h3>
+                <p>Your intelligent healthcare companion powered by AI</p>
+            </div>
+            <div class="footer-section">
+                <h4>Important Notice</h4>
+                <p>DocBotAI provides informational content only. Always consult with qualified healthcare professionals
+                    for medical advice.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p><i class="fas fa-envelope"></i> nikhil.verma.cs27@iilm.edu</p>
+                <p><i class="fas fa-phone"></i> +91 8084487050</p>
+            </div>
+        </div>
+
+    </footer>
+
+    <script>
+        // Hide loading screen when page loads
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                document.getElementById('loadingScreen').style.display = 'none';
+            }, 500);
+        });
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

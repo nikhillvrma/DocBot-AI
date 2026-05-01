@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Hospital Recommendations - DocBotAI{% endblock %}
+
+{% block content %}
+<section class="disease-section">
+    <div class="disease-container">
+        <div class="page-header">
+            <h1><i class="fas fa-hospital"></i> Hospital & Medical Recommendations</h1>
+            <p>Find nearby hospitals and medical shops based on your location</p>
+        </div>
+
+        <div class="content-grid">
+            <div class="input-panel">
+                <form id="locationForm">
+                    <div class="form-group">
+                        <label for="location">Place Name & Pincode *</label>
+                        <input 
+                            type="text" 
+                            id="location" 
+                            name="location" 
+                            class="form-control"
+                            required
+                            placeholder="e.g., Koramangala, Bangalore 560034"
+                            style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 1rem; margin-top: 8px;"
+                        >
+                    </div>
+
+                    <button type="submit" class="analyze-btn" id="searchBtn" style="margin-top: 20px;">
+                        <span>Find Hospitals</span>
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+
+                <div class="disclaimer-box" style="margin-top: 24px;">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>Note:</strong> The recommendations are AI-generated based on typical real-world data and might not reflect real-time availability. Please verify contact information and availability before visiting.
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-panel" id="resultsPanel">
+                <div class="empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; color: #64748b;">
+                    <i class="fas fa-hospital-alt" style="font-size: 3rem; margin-bottom: 1rem; color: #cbd5e1;"></i>
+                    <h3>No Search Yet</h3>
+                    <p>Enter your location and click "Find Hospitals" to see nearby options</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('locationForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const locationInput = document.getElementById('location').value;
+    const searchBtn = document.getElementById('searchBtn');
+    const resultsPanel = document.getElementById('resultsPanel');
+    
+    searchBtn.disabled = true;
+    searchBtn.innerHTML = '<span>Searching...</span><i class="fas fa-spinner fa-spin"></i>';
+    
+    resultsPanel.innerHTML = `
+        <div class="loading-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px;">
+            <div class="loader" style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <p style="margin-top: 16px; font-weight: 500;">Finding nearby healthcare facilities...</p>
+            <small style="color: #64748b;">This may take a moment</small>
+        </div>
+        <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+    `;
+
+    try {
+        const response = await fetch('/recommend-hospitals', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ location: locationInput })
+        });
+
+        const data = await response.json();
+        
+        resultsPanel.innerHTML = `
+            <div class="results-content" style="padding: 24px;">
+                <div class="results-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+                    <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.5rem;"></i>
+                    <h3 style="margin: 0; font-size: 1.25rem;">Recommendations Found</h3>
+                </div>
+                <div class="prediction-result" style="line-height: 1.6; color: #334155;">
+                    ${formatPrediction(data.recommendations)}
+                </div>
+                <div class="action-buttons" style="margin-top: 24px; display: flex; gap: 16px;">
+                    <button onclick="window.location.href='/chatbot'" class="action-btn secondary" style="padding: 12px 24px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 500; transition: all 0.3s ease;">
+                        <i class="fas fa-comments"></i> Ask AI for Details
+                    </button>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        resultsPanel.innerHTML = `
+            <div class="error-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; color: #ef4444;">
+                <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 16px;"></i>
+                <h3 style="margin-bottom: 8px;">Search Error</h3>
+                <p>Sorry, we couldn't fetch recommendations right now. Please try again.</p>
+            </div>
+        `;
+    } finally {
+        searchBtn.disabled = false;
+        searchBtn.innerHTML = '<span>Find Hospitals</span><i class="fas fa-search"></i>';
+    }
+});
+
+function formatPrediction(text) {
+    if (!text) return '<p>No data received.</p>';
+    // Convert markdown-style formatting to HTML
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/\n\n/g, '</p><p style="margin-bottom: 16px;">');
+    text = text.replace(/\n/g, '<br>');
+    text = text.replace(/- (.*?)(<br>|$)/g, '<li style="margin-bottom: 8px; margin-left: 20px;">$1</li>');
+    text = text.replace(/(<li.*<\/li>)/s, '<ul style="margin-bottom: 16px;">$1</ul>');
+    return '<p style="margin-bottom: 16px;">' + text + '</p>';
+}
+</script>
+{% endblock %}

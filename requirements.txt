@@ -1,0 +1,7 @@
+Flask==3.0.0
+PyPDF2 == 3.0.1 
+groq == 1.1.1
+python-dotenv == 1.0.0
+
+
+# Just Run this Command: python app.py

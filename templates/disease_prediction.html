@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Disease Prediction - DocBotAI{% endblock %}
+
+{% block content %}
+<section class="disease-section">
+    <div class="disease-container">
+        <div class="page-header">
+            <h1><i class="fas fa-stethoscope"></i> Disease Prediction</h1>
+            <p>Describe your symptoms and get AI-powered health insights</p>
+        </div>
+
+        <div class="content-grid">
+            <div class="input-panel">
+                <form id="symptomsForm">
+                    <div class="form-group">
+                        <label for="symptoms">Describe Your Symptoms *</label>
+                        <textarea 
+                            id="symptoms" 
+                            name="symptoms" 
+                            rows="8" 
+                            required
+                            placeholder="Please describe your symptoms in detail. Include:&#10;• What symptoms are you experiencing?&#10;• When did they start?&#10;• How severe are they (mild/moderate/severe)?&#10;• Any factors that make them better or worse?&#10;&#10;Example: 'I've had a persistent headache for 3 days, mostly on the right side. It gets worse in bright light. I also feel slightly nauseous and have mild fever.'"
+                        ></textarea>
+                    </div>
+
+                    <div class="common-symptoms">
+                        <p><strong>Common symptoms to mention:</strong></p>
+                        <div class="symptom-tags">
+                            <span class="symptom-tag" onclick="addSymptom('Fever')">Fever</span>
+                            <span class="symptom-tag" onclick="addSymptom('Headache')">Headache</span>
+                            <span class="symptom-tag" onclick="addSymptom('Cough')">Cough</span>
+                            <span class="symptom-tag" onclick="addSymptom('Fatigue')">Fatigue</span>
+                            <span class="symptom-tag" onclick="addSymptom('Nausea')">Nausea</span>
+                            <span class="symptom-tag" onclick="addSymptom('Body ache')">Body ache</span>
+                            <span class="symptom-tag" onclick="addSymptom('Sore throat')">Sore throat</span>
+                            <span class="symptom-tag" onclick="addSymptom('Dizziness')">Dizziness</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="analyze-btn" id="analyzeBtn">
+                        <span>Analyze Symptoms</span>
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+
+                <div class="disclaimer-box">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <strong>Important:</strong> This is an AI-based assessment tool and does not replace professional medical diagnosis. If you have severe symptoms or a medical emergency, please seek immediate medical attention.
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-panel" id="resultsPanel">
+                <div class="empty-state">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>No Analysis Yet</h3>
+                    <p>Enter your symptoms and click "Analyze Symptoms" to get AI-powered health insights</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function addSymptom(symptom) {
+    const textarea = document.getElementById('symptoms');
+    const currentValue = textarea.value.trim();
+    if (currentValue) {
+        textarea.value = currentValue + ', ' + symptom;
+    } else {
+        textarea.value = symptom;
+    }
+    textarea.focus();
+}
+
+document.getElementById('symptomsForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const symptoms = document.getElementById('symptoms').value;
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const resultsPanel = document.getElementById('resultsPanel');
+    
+    analyzeBtn.disabled = true;
+    analyzeBtn.innerHTML = '<span>Analyzing...</span><i class="fas fa-spinner fa-spin"></i>';
+    
+    resultsPanel.innerHTML = `
+        <div class="loading-state">
+            <div class="loader"></div>
+            <p>Analyzing your symptoms...</p>
+            <small>This may take a moment</small>
+        </div>
+    `;
+
+    try {
+        const response = await fetch('/predict-disease', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ symptoms: symptoms })
+        });
+
+        const data = await response.json();
+        
+        resultsPanel.innerHTML = `
+            <div class="results-content">
+                <div class="results-header">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Analysis Complete</h3>
+                </div>
+                <div class="prediction-result">
+                    ${formatPrediction(data.prediction)}
+                </div>
+                <div class="action-buttons">
+                    <button onclick="window.location.href='/treatment-plan'" class="action-btn primary">
+                        <i class="fas fa-notes-medical"></i> Generate Treatment Plan
+                    </button>
+                    <button onclick="window.location.href='/chatbot'" class="action-btn secondary">
+                        <i class="fas fa-comments"></i> Ask More Questions
+                    </button>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        resultsPanel.innerHTML = `
+            <div class="error-state">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>Analysis Error</h3>
+                <p>Sorry, we couldn't analyze your symptoms. Please try again.</p>
+            </div>
+        `;
+    } finally {
+        analyzeBtn.disabled = false;
+        analyzeBtn.innerHTML = '<span>Analyze Symptoms</span><i class="fas fa-search"></i>';
+    }
+});
+
+function formatPrediction(text) {
+    // Convert markdown-style formatting to HTML
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/\n\n/g, '</p><p>');
+    text = text.replace(/\n/g, '<br>');
+    text = text.replace(/- (.*?)(<br>|$)/g, '<li>$1</li>');
+    text = text.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+    return '<p>' + text + '</p>';
+}
+</script>
+{% endblock %}

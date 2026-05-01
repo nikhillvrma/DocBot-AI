@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block title %}Report Analysis - DocBotAI{% endblock %}
+
+{% block content %}
+<section class="report-section">
+    <div class="report-container">
+        <div class="page-header">
+            <h1><i class="fas fa-file-medical"></i> Medical Report Analysis</h1>
+            <p>Upload your medical reports for AI-powered analysis and insights</p>
+        </div>
+
+        <div class="upload-section">
+            <form id="reportForm" enctype="multipart/form-data">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Upload Medical Report</h3>
+                    <p>Drag and drop your PDF file here or click to browse</p>
+                    <input type="file" id="reportFile" name="report" accept=".pdf" required hidden>
+                    <button type="button" class="browse-btn" onclick="document.getElementById('reportFile').click()">
+                        Browse Files
+                    </button>
+                    <small>Supported format: PDF (Max 16MB)</small>
+                </div>
+
+                <div id="fileInfo" class="file-info" style="display: none;">
+                    <i class="fas fa-file-pdf"></i>
+                    <div class="file-details">
+                        <p id="fileName"></p>
+                        <small id="fileSize"></small>
+                    </div>
+                    <button type="button" class="remove-file" onclick="removeFile()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <button type="submit" class="analyze-btn" id="analyzeBtn" style="display: none;">
+                    <span>Analyze Report</span>
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+
+        <div class="analysis-section" id="analysisSection">
+            <div class="empty-state">
+                <i class="fas fa-chart-line"></i>
+                <h3>No Analysis Yet</h3>
+                <p>Upload a medical report to get detailed AI-powered insights and explanations</p>
+            </div>
+        </div>
+
+        <div class="features-info">
+            <h3>What We Analyze</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <i class="fas fa-vial"></i>
+                    <h4>Lab Results</h4>
+                    <p>Blood tests, urine tests, and other laboratory findings</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-x-ray"></i>
+                    <h4>Imaging Reports</h4>
+                    <p>X-rays, CT scans, MRI, and ultrasound reports</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-heartbeat"></i>
+                    <h4>Vital Signs</h4>
+                    <p>Blood pressure, heart rate, and other health metrics</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-notes-medical"></i>
+                    <h4>Medical Summaries</h4>
+                    <p>Discharge summaries, consultation notes, and health records</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const uploadArea = document.getElementById('uploadArea');
+const reportFile = document.getElementById('reportFile');
+const fileInfo = document.getElementById('fileInfo');
+const analyzeBtn = document.getElementById('analyzeBtn');
+
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('drag-over');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('drag-over');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('drag-over');
+    const files = e.dataTransfer.files;
+    if (files.length > 0 && files[0].type === 'application/pdf') {
+        reportFile.files = files;
+        displayFileInfo(files[0]);
+    }
+});
+
+reportFile.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        displayFileInfo(e.target.files[0]);
+    }
+});
+
+function displayFileInfo(file) {
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('fileSize').textContent = formatFileSize(file.size);
+    uploadArea.style.display = 'none';
+    fileInfo.style.display = 'flex';
+    analyzeBtn.style.display = 'block';
+}
+
+function removeFile() {
+    reportFile.value = '';
+    uploadArea.style.display = 'flex';
+    fileInfo.style.display = 'none';
+    analyzeBtn.style.display = 'none';
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
+
+document.getElementById('reportForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData();
+    formData.append('report', reportFile.files[0]);
+    
+    const analysisSection = document.getElementById('analysisSection');
+    analyzeBtn.disabled = true;
+    analyzeBtn.innerHTML = '<span>Analyzing...</span><i class="fas fa-spinner fa-spin"></i>';
+    
+    analysisSection.innerHTML = `
+        <div class="loading-state">
+            <div class="loader"></div>
+            <p>Analyzing your medical report...</p>
+            <small>Extracting and interpreting data</small>
+        </div>
+    `;
+
+    try {
+        const response = await fetch('/analyze-report', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+        
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        
+        analysisSection.innerHTML = `
+            <div class="analysis-results">
+                <div class="results-header">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <h3>Analysis Complete</h3>
+                        <p class="timestamp">${new Date().toLocaleString()}</p>
+                    </div>
+                </div>
+                <div class="analysis-content">
+                    ${formatAnalysis(data.analysis)}
+                </div>
+                <div class="analysis-footer">
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Note:</strong> This analysis is AI-generated and for informational purposes. 
+                        Please discuss these results with your healthcare provider for proper medical interpretation.
+                    </div>
+                    <div class="action-buttons">
+                        <button onclick="window.print()" class="action-btn">
+                            <i class="fas fa-print"></i> Print Analysis
+                        </button>
+                        <button onclick="window.location.href='/chatbot'" class="action-btn secondary">
+                            <i class="fas fa-comments"></i> Ask Questions
+                        </button>
+                        <button onclick="removeFile(); document.getElementById('analysisSection').innerHTML = '<div class=\'empty-state\'><i class=\'fas fa-chart-line\'></i><h3>No Analysis Yet</h3><p>Upload a medical report to get detailed AI-powered insights</p></div>'" class="action-btn secondary">
+                            <i class="fas fa-upload"></i> Upload Another
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        analysisSection.innerHTML = `
+            <div class="error-state">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>Analysis Error</h3>
+                <p>${error.message || 'Sorry, we couldn\'t analyze your report. Please try again.'}</p>
+            </div>
+        `;
+    } finally {
+        analyzeBtn.disabled = false;
+        analyzeBtn.innerHTML = '<span>Analyze Report</span><i class="fas fa-search"></i>';
+    }
+});
+
+function formatAnalysis(text) {
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/\n\n/g, '</p><p>');
+    text = text.replace(/\n/g, '<br>');
+    text = text.replace(/- (.*?)(<br>|$)/g, '<li>$1</li>');
+    text = text.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+    return '<p>' + text + '</p>';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Treatment Plans - DocBotAI{% endblock %}
+
+{% block content %}
+<section class="treatment-section">
+    <div class="treatment-container">
+        <div class="page-header">
+            <h1><i class="fas fa-notes-medical"></i> Personalized Treatment Plan</h1>
+            <p>Get customized treatment recommendations based on your condition and medical profile</p>
+        </div>
+
+        <div class="content-layout">
+            <div class="input-section">
+                <form id="treatmentForm">
+                    <div class="form-group">
+                        <label for="disease">Condition / Disease *</label>
+                        <input 
+                            type="text" 
+                            id="disease" 
+                            name="disease" 
+                            required
+                            placeholder="e.g., Type 2 Diabetes, Hypertension, Migraine"
+                        >
+                        <small>Enter the diagnosed condition or health concern</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="additionalInfo">Additional Information (Optional)</label>
+                        <textarea 
+                            id="additionalInfo" 
+                            rows="4"
+                            placeholder="Any specific concerns, preferences, or additional context..."
+                        ></textarea>
+                    </div>
+
+                    <div class="profile-summary">
+                        <h4><i class="fas fa-user-circle"></i> Your Medical Profile</h4>
+                        <div class="profile-info">
+                            <p><strong>Age:</strong> {{ user.age }} years</p>
+                            <p><strong>Medical History:</strong> {{ user.medical_history or 'None reported' }}</p>
+                            <p><strong>Allergies:</strong> {{ user.allergies or 'None reported' }}</p>
+                            <p><strong>Current Medications:</strong> {{ user.current_medications or 'None' }}</p>
+                        </div>
+                        <small>This information will be considered in your treatment plan</small>
+                    </div>
+
+                    <button type="submit" class="generate-btn" id="generateBtn">
+                        <span>Generate Treatment Plan</span>
+                        <i class="fas fa-prescription"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="output-section" id="outputSection">
+                <div class="empty-state">
+                    <i class="fas fa-file-prescription"></i>
+                    <h3>No Treatment Plan Yet</h3>
+                    <p>Enter a condition and click "Generate Treatment Plan" to receive personalized recommendations</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-cards">
+            <div class="info-card">
+                <i class="fas fa-shield-alt"></i>
+                <h4>Safe & Personalized</h4>
+                <p>Treatment plans consider your allergies and current medications to avoid interactions</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-book-medical"></i>
+                <h4>Evidence-Based</h4>
+                <p>Recommendations based on current medical guidelines and research</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-user-md"></i>
+                <h4>Consult Your Doctor</h4>
+                <p>Always discuss treatment plans with your healthcare provider before starting</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('treatmentForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const disease = document.getElementById('disease').value;
+    const additionalInfo = document.getElementById('additionalInfo').value;
+    const generateBtn = document.getElementById('generateBtn');
+    const outputSection = document.getElementById('outputSection');
+    
+    generateBtn.disabled = true;
+    generateBtn.innerHTML = '<span>Generating...</span><i class="fas fa-spinner fa-spin"></i>';
+    
+    outputSection.innerHTML = `
+        <div class="loading-state">
+            <div class="loader"></div>
+            <p>Creating your personalized treatment plan...</p>
+            <small>Analyzing your medical profile and condition</small>
+        </div>
+    `;
+
+    try {
+        const response = await fetch('/generate-treatment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                disease: disease,
+                additionalInfo: additionalInfo 
+            })
+        });
+
+        const data = await response.json();
+        
+        outputSection.innerHTML = `
+            <div class="treatment-plan">
+                <div class="plan-header">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <h3>Treatment Plan for: ${disease}</h3>
+                        <p class="timestamp">Generated on ${new Date().toLocaleDateString()}</p>
+                    </div>
+                </div>
+                <div class="plan-content">
+                    ${formatTreatmentPlan(data.treatment_plan)}
+                </div>
+                <div class="plan-footer">
+                    <div class="warning-box">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Important:</strong> This treatment plan is for informational purposes only. 
+                        Always consult with your healthcare provider before starting any new treatment or medication.
+                    </div>
+                    <div class="action-buttons">
+                        <button onclick="window.print()" class="action-btn">
+                            <i class="fas fa-print"></i> Print Plan
+                        </button>
+                        <button onclick="window.location.href='/chatbot'" class="action-btn secondary">
+                            <i class="fas fa-comments"></i> Ask Questions
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        outputSection.innerHTML = `
+            <div class="error-state">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>Generation Error</h3>
+                <p>Sorry, we couldn't generate your treatment plan. Please try again.</p>
+            </div>
+        `;
+    } finally {
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = '<span>Generate Treatment Plan</span><i class="fas fa-prescription"></i>';
+    }
+});
+
+function formatTreatmentPlan(text) {
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/\n\n/g, '</p><p>');
+    text = text.replace(/\n/g, '<br>');
+    text = text.replace(/- (.*?)(<br>|$)/g, '<li>$1</li>');
+    text = text.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+    return '<p>' + text + '</p>';
+}
+</script>
+{% endblock %}

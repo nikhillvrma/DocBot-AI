@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Health Analytics - DocBotAI{% endblock %}
+
+{% block content %}
+<section style="padding: 3rem 0; min-height: 85vh;">
+    <div class="container">
+        <div class="page-header" style="text-align: center; margin-bottom: 3rem;">
+            <h1><i class="fas fa-chart-line"></i> Health Analytics Dashboard</h1>
+            <p style="color: #6B7280; font-size: 1.1rem;">Track and visualize your health metrics over time</p>
+        </div>
+        
+        <div class="analytics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+            <!-- Metric Cards -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                        <p style="opacity: 0.9; margin-bottom: 0.5rem;">Heart Rate</p>
+                        <h2 style="color: white; font-size: 2.5rem; margin: 0;">72</h2>
+                        <p style="opacity: 0.8; font-size: 0.9rem; margin-top: 0.5rem;">bpm</p>
+                    </div>
+                    <i class="fas fa-heartbeat" style="font-size: 2.5rem; opacity: 0.8;"></i>
+                </div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.2);">
+                    <span style="color: #10B981;">↓ 3% from last week</span>
+                </div>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                        <p style="opacity: 0.9; margin-bottom: 0.5rem;">Blood Pressure</p>
+                        <h2 style="color: white; font-size: 2.5rem; margin: 0;">120/80</h2>
+                        <p style="opacity: 0.8; font-size: 0.9rem; margin-top: 0.5rem;">mmHg</p>
+                    </div>
+                    <i class="fas fa-tint" style="font-size: 2.5rem; opacity: 0.8;"></i>
+                </div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.2);">
+                    <span>Normal range</span>
+                </div>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                        <p style="opacity: 0.9; margin-bottom: 0.5rem;">Blood Glucose</p>
+                        <h2 style="color: white; font-size: 2.5rem; margin: 0;">95</h2>
+                        <p style="opacity: 0.8; font-size: 0.9rem; margin-top: 0.5rem;">mg/dL</p>
+                    </div>
+                    <i class="fas fa-vial" style="font-size: 2.5rem; opacity: 0.8;"></i>
+                </div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.2);">
+                    <span>Healthy level</span>
+                </div>
+            </div>
+        </div>
+        
+        <div style="background: white; padding: 3rem; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); margin-bottom: 2rem;">
+            <h3 style="margin-bottom: 2rem;"><i class="fas fa-robot"></i> AI-Generated Insights</h3>
+            <div style="background: #F3F4F6; padding: 2rem; border-radius: 12px; border-left: 4px solid var(--primary-color);">
+                <p style="line-height: 1.8; margin: 0;">
+                    Based on your recent health metrics, you're maintaining excellent cardiovascular health. 
+                    Your heart rate shows a positive downward trend, indicating improved fitness. 
+                    Blood pressure remains in the optimal range, and glucose levels are stable.
+                    <br><br>
+                    <strong>Recommendations:</strong>
+                    <br>• Continue your current exercise routine
+                    <br>• Maintain balanced diet with focus on whole foods
+                    <br>• Ensure 7-8 hours of quality sleep
+                    <br>• Schedule routine check-up in 3 months
+                </p>
+            </div>
+        </div>
+        
+        <div style="background: white; padding: 3rem; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+            <h3 style="margin-bottom: 2rem;"><i class="fas fa-info-circle"></i> Coming Soon</h3>
+            <p style="color: #6B7280;">
+                Interactive charts and detailed health trend visualizations will be available soon. 
+                For now, you can view your key metrics above and receive AI-powered insights about your health status.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

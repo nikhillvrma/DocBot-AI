@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - DocBotAI{% endblock %}
+
+{% block content %}
+<section class="dashboard">
+
+    <!-- Banner Image Only -->
+    <div class="dashboard-banner">
+        <img src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=1200&h=300&fit=crop&auto=format" 
+             alt="Healthcare Dashboard" 
+             class="banner-image">
+    </div>
+
+    <!-- Text BELOW the image -->
+    <div class="banner-text">
+        <h1>Welcome back, <span class="gradient-text">{{ user.name }}</span>! 👋</h1>
+        <p>Your personal healthcare dashboard - Managing your health with AI</p>
+    </div>
+
+
+    <div class="dashboard-container">
+        <div class="dashboard-grid">
+            <a href="/chatbot" class="dashboard-card">
+                <div class="card-icon chatbot-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3>AI Chatbot</h3>
+                <p>Ask any health-related questions and get instant, intelligent responses</p>
+                <div class="card-footer">
+                    <span>Start Chatting</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <a href="/disease-prediction" class="dashboard-card">
+                <div class="card-icon prediction-icon">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <h3>Disease Prediction</h3>
+                <p>Analyze your symptoms and get potential diagnoses with recommendations</p>
+                <div class="card-footer">
+                    <span>Check Symptoms</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <a href="/treatment-plan" class="dashboard-card">
+                <div class="card-icon treatment-icon">
+                    <i class="fas fa-notes-medical"></i>
+                </div>
+                <h3>Treatment Plans</h3>
+                <p>Get personalized treatment recommendations for your condition</p>
+                <div class="card-footer">
+                    <span>Generate Plan</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <a href="/alternative-medicine" class="dashboard-card">
+                <div class="card-icon alternative-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h3>Alternative Medicine</h3>
+                <p>Explore natural remedies and complementary treatment options</p>
+                <div class="card-footer">
+                    <span>Explore Options</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <a href="/hospital-recommendation" class="dashboard-card">
+                <div class="card-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                    <i class="fas fa-hospital"></i>
+                </div>
+                <h3>Find Hospitals</h3>
+                <p>Locate nearby hospitals and medical shops based on your location</p>
+                <div class="card-footer">
+                    <span>Search Now</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <a href="/report-analysis" class="dashboard-card">
+                <div class="card-icon report-icon">
+                    <i class="fas fa-file-medical"></i>
+                </div>
+                <h3>Report Analysis</h3>
+                <p>Upload medical reports for detailed analysis and explanations</p>
+                <div class="card-footer">
+                    <span>Upload Report</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <a href="/profile" class="dashboard-card">
+                <div class="card-icon profile-icon">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <h3>My Profile</h3>
+                <p>View and update your personal and medical information</p>
+                <div class="card-footer">
+                    <span>View Profile</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="quick-info">
+            <div class="info-card">
+                <h3><i class="fas fa-user-circle"></i> Your Profile</h3>
+                <div class="info-content">
+                    <p><strong>Age:</strong> {{ user.age }} years</p>
+                    <p><strong>Gender:</strong> {{ user.gender }}</p>
+                    <p><strong>Blood Group:</strong> {{ user.blood_group or 'Not specified' }}</p>
+                </div>
+                <a href="/profile" class="info-link">View Full Profile <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fas fa-heartbeat"></i> Health Tips</h3>
+                <div class="health-tips">
+                    <div class="tip">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Stay hydrated - Drink 8 glasses of water daily</span>
+                    </div>
+                    <div class="tip">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Exercise regularly - At least 30 minutes daily</span>
+                    </div>
+                    <div class="tip">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Get 7-8 hours of quality sleep each night</span>
+                    </div>
+                    <div class="tip">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Eat a balanced diet with fruits and vegetables</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
