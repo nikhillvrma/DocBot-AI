@@ -117,16 +117,12 @@ http://127.0.0.1:5000/
 
 ## 📈 Future Enhancements
 
-* Integration with real-time hospital APIs
-* Mobile application development
+* Voice-based chatbot
+* Multi-language support
 * Advanced AI diagnosis models
-* Wearable device integration
+* Health score system
 
 ---
-
-## 👨‍💻 Author
-
-**Mahesh Karagaonkar**
 
 ---
 
